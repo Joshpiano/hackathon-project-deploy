@@ -19,7 +19,7 @@ function Dashboard() {
       </div>
 
       {/* Header */}
-      <header className="hover:bg-green-700 text-white p-4 rounded-xl shadow-md">
+      <header className="bg-green-700 text-white p-4 rounded-xl shadow-md">
         <h1 className="text-3xl font-bold text-center">Health & Wellness Tips</h1>
         <p className="mt-2 text-lg text-center">Your daily guide to staying healthy, safe, and strong.</p>
       </header>
@@ -28,16 +28,16 @@ function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
 
         {/* Card 1 */}
-        <div className="hover:bg-white shadow rounded-xl p-6">
+        <div className="bg-white shadow rounded-xl p-6">
           <h2 className="text-xl font-bold text-green-700">💧 Stay Hydrated</h2>
-          <p className="mt-3 text-gray-600">
+          <p className="mt-3 text-gray-600 bg-yellow-400">
             Drink at least 6–8 glasses of water daily to keep your body active,
             energized, and functioning properly.
           </p>
         </div>
 
         {/* Card 2 */}
-        <div className="hover:bg-white shadow rounded-xl p-6">
+        <div className="bg-white shadow rounded-xl p-6">
           <h2 className="text-xl font-bold text-green-700">🥗 Eat Balanced Meals</h2>
           <p className="mt-3 text-gray-600">
             Include fruits, vegetables, proteins, and whole grains in your meals.
@@ -46,7 +46,7 @@ function Dashboard() {
         </div>
 
         {/* Card 3 */}
-        <div className="hover:bg-white shadow rounded-xl p-6">
+        <div className="bg-white shadow rounded-xl p-6">
           <h2 className="text-xl font-bold text-green-900">🏃‍♂️ Exercise Regularly</h2>
           <p className="mt-3 text-gray-600">
             Do at least 30 minutes of physical activity daily. Walking, jogging,
@@ -55,7 +55,7 @@ function Dashboard() {
         </div>
 
         {/* Card 4 */}
-        <div className="hover:bg-white shadow rounded-xl p-6">
+        <div className="bg-white shadow rounded-xl p-6">
           <h2 className="text-xl font-bold text-green-700">😴 Sleep Well</h2>
           <p className="mt-3 text-gray-600">
             Ensure 7–9 hours of sleep every night. Quality sleep strengthens
@@ -64,7 +64,7 @@ function Dashboard() {
         </div>
 
         {/* Card 5 */}
-        <div className="hover:bg-white shadow rounded-xl p-6">
+        <div className="bg-white shadow rounded-xl p-6">
           <h2 className="text-xl font-bold text-green-700">🩺 Regular Checkups</h2>
           <p className="mt-3 text-gray-600">
             Visit a healthcare professional for routine medical checkups.
@@ -73,7 +73,7 @@ function Dashboard() {
         </div>
 
         {/* Card 6 */}
-        <div className="hover:bg-white shadow rounded-xl p-6">
+        <div className="bg-white shadow rounded-xl p-6">
           <h2 className="text-xl font-bold text-green-700">🧠 Mental Health Matters</h2>
           <p className="mt-3 text-gray-600">
             Reduce stress, practice mindfulness, and talk to someone if you feel
@@ -84,7 +84,7 @@ function Dashboard() {
       </div>
 
       {/* Big Advice Section */}
-      <div className="hover:bg-white transition duration-300  shadow rounded-xl p-8 mt-10">
+      <div className="bg-white transition duration-300  shadow rounded-xl p-8 mt-10">
         <h2 className="text-2xl font-bold text-green-700">💡 General Health Advice</h2>
         
         <ul className="list-disc pl-6 mt-4 space-y-2 text-gray-800">
