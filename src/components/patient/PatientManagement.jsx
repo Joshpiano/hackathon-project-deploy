@@ -64,7 +64,7 @@ function PatientManagement() {
       admissionDate: new Date().toISOString().split('T')[0],
       status: 'admitted'
     };
-    setPatients([...patients, newPatient]);
+    setPatients([newPatient, ...patients]);
     setFormData({ name: '', age: '', gender: '', contact: '', medicalHistory: '' });
     setShowForm(false);
   };
@@ -217,14 +217,14 @@ const { user, } = useAuth();
                   value={formData.contact}
                   onChange={handleInputChange}
                   placeholder="Contact Number"
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                   required
                 />
                 <select
   name="medicalWard"
   value={formData.medicalWard}
   onChange={handleInputChange}
-  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
   required
 >
   <option value="">Select Admission Ward</option>
@@ -234,6 +234,7 @@ const { user, } = useAuth();
   <option value="Emergency Ward">Emergency Ward</option>
   <option value="Surgical Ward">Surgical Ward</option>
   <option value="Maternity Ward">Maternity Ward</option>
+  <option value="General Outpatient Department">General Outpatient Department</option>
 </select>
 
                 <textarea

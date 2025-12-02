@@ -139,7 +139,7 @@ function LaboratoryClone() {
 
           <button
             onClick={handleAddPatient}
-            className="col-span-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg"
+            className="col-span-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg"
           >
             Save Patient
           </button>

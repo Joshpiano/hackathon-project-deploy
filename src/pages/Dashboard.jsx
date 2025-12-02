@@ -20,8 +20,8 @@ function Dashboard() {
 
       {/* Header */}
       <header className=" text-white p-4 rounded-xl shadow-md">
-        <h1 className="text-3xl font-bold text-center">Health & Wellness Tips</h1>
-        <p className="mt-2 text-lg text-center">Your daily guide to staying healthy, safe, and strong.</p>
+        <h1 className="text-3xl font-bold text-center  ">Health & Wellness Tips</h1>
+        <p className="mt-2 text-lg text-center ">Your daily guide to staying healthy, safe, and strong.</p>
       </header>
 
       {/* Health Cards */}

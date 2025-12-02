@@ -12,7 +12,7 @@ function WelcomePage({ user, onContinue }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-500 via-green-600 to-green-700 flex items-center justify-center p-4">
+    <div className="min-h-screen  flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
         {/* Welcome Card */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12">

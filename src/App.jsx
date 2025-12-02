@@ -31,7 +31,9 @@ function AppContent() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-800 min-h-screen w-screen bg-cover bg-center bg-no-repeat  " style={{ backgroundImage: `url(${nursepicture})` }}>
+    <div className="flex h-screen bg-gray-800 min-h-screen w-screen bg-cover bg-center bg-no-repeat  " style={{ backgroundImage: `url(${nursepicture})` }}
+  
+   >
       
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">

@@ -29,6 +29,7 @@ function DoctorDashboard() {
   ]);
 
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [complaint, setComplaint] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
   const [prescription, setPrescription] = useState('');
 
@@ -37,6 +38,13 @@ function DoctorDashboard() {
       patient.id === patientId ? { ...patient, diagnosis } : patient
     ));
     setDiagnosis('');
+  };
+
+   const handleSaveComplaint = (patientId) => {
+    setPatients(patients.map(patient => 
+      patient.id === patientId ? { ...patient, complaint } : patient
+    ));
+    setComplaint('');
   };
 
   const handleSendPrescription = (patientId) => {
@@ -180,14 +188,14 @@ const { user, } = useAuth();
             <div className="mb-4">
               <h4 className="font-semibold mb-2">Chief Complaint</h4>
               <textarea
-                value={diagnosis}
-                onChange={(e) => setDiagnosis(e.target.value)}
+                value={complaint}
+                onChange={(e) => setComplaint(e.target.value)}
                 placeholder="Enter Complaint..."
                 rows="3"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
               />
               <button
-                onClick={() => handleSaveDiagnosis(selectedPatient.id)}
+                onClick={() => handleSaveComplaint(selectedPatient.id)}
                 className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mt-2"
               >
                 Save Complaint
@@ -218,7 +226,7 @@ const { user, } = useAuth();
                 onChange={(e) => setPrescription(e.target.value)}
                 placeholder="Enter prescription..."
                 rows="3"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
               />
               <button
                 onClick={() => handleSendPrescription(selectedPatient.id)}
