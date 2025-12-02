@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.ec46d87e.css",
+    "main.js": "/static/js/main.65d36120.js",
+    "static/media/Hbackground.png": "/static/media/Hbackground.f3bff59bcfd633116973.png",
+    "static/media/HMSlogo.png": "/static/media/HMSlogo.126dee2e31e5695cc793.png",
+    "static/media/nursepictures.jpg": "/static/media/nursepictures.376bbe27f6ea54245002.jpg",
+    "static/media/eksuth.png": "/static/media/eksuth.8794910223fa291a2424.png",
+    "index.html": "/index.html",
+    "main.ec46d87e.css.map": "/static/css/main.ec46d87e.css.map",
+    "main.65d36120.js.map": "/static/js/main.65d36120.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ec46d87e.css",
+    "static/js/main.65d36120.js"
+  ]
+}
