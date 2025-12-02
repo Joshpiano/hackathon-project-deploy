@@ -19,7 +19,7 @@ function Dashboard() {
       </div>
 
       {/* Header */}
-      <header className="bg-green-700 text-white p-4 rounded-xl shadow-md">
+      <header className=" text-white p-4 rounded-xl shadow-md">
         <h1 className="text-3xl font-bold text-center">Health & Wellness Tips</h1>
         <p className="mt-2 text-lg text-center">Your daily guide to staying healthy, safe, and strong.</p>
       </header>
@@ -30,7 +30,7 @@ function Dashboard() {
         {/* Card 1 */}
         <div className="bg-white shadow rounded-xl p-6">
           <h2 className="text-xl font-bold text-green-700">💧 Stay Hydrated</h2>
-          <p className="mt-3 text-gray-600 bg-yellow-400">
+          <p className="mt-3 text-gray-600 ">
             Drink at least 6–8 glasses of water daily to keep your body active,
             energized, and functioning properly.
           </p>
