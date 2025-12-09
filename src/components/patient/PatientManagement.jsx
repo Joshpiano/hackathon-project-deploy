@@ -1,42 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios'; // ⬅️ Import Axios
 import { useAuth } from '../../context/AuthContext';
 
-
-
+// Define the API URL
+const API_URL = 'https://hms-management-system-ae3n.onrender.com/api/v1/patients';
 
 function PatientManagement() {
-  const [patients, setPatients] = useState([
-    {
-      id: 1,
-      name: 'Ibrahim Musa',
-      age: 45,
-      gender: 'Male',
-      contact: '+1234567890',
-      admissionDate: '2024-01-10',
-      status: 'admitted',
-      medicalWard: 'Male-Medical'
-    },
-    {
-      id: 2,
-      name: 'Ogunleye Oluwaseun',
-      age: 32,
-      gender: 'Female',
-      contact: '+0987654321',
-      admissionDate: '2024-01-12',
-      status: 'discharged',
-      medicalWard: 'Female-Medical'
-    },
-     {
-      id: 3,
-      name: 'Adekunle Olumide',
-      age: 12,
-      gender: 'Female',
-      contact: '+0987654321',
-      admissionDate: '2024-01-12',
-      status: 'discharged',
-      medicalWard: 'Pediatric Ward'
-    }
-  ]);
+  const [patients, setPatients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -44,10 +16,36 @@ function PatientManagement() {
     age: '',
     gender: '',
     contact: '',
+    email: '',
     medicalWard: '',
-    medicalHistory: ''
+    password: ''
   });
 
+  const { user } = useAuth(); 
+
+  // --- API Function: GET All Patients ---
+  const fetchPatients = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Axios automatically returns the response data in the 'data' property
+      const response = await axios.get(API_URL);
+      setPatients(response.data); 
+    } catch (err) {
+      console.error("Fetch Error:", err);
+      // Axios errors often include a response object for better detail
+      const errorMessage = err.response ? `API Error: ${err.response.status}` : 'Network Error';
+      setError(`Failed to fetch patient data. (${errorMessage})`);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPatients();
+  }, [fetchPatients]);
+
+  // --- Input Handlers (No Change) ---
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -56,114 +54,93 @@ function PatientManagement() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  // --- API Function: POST New Patient ---
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newPatient = {
-      id: patients.length + 1,
-      ...formData,
-      admissionDate: new Date().toISOString().split('T')[0],
-      status: 'admitted'
-    };
-    setPatients([newPatient, ...patients]);
-    setFormData({ name: '', age: '', gender: '', contact: '', medicalHistory: '' });
-    setShowForm(false);
+
+    try {
+      // Axios handles JSON stringification automatically
+      const response = await axios.post(API_URL, {
+        ...formData,
+        age: parseInt(formData.age, 10), // Ensure age is a number
+      });
+
+      // Response data is accessed via response.data
+      const newPatient = response.data;
+      
+      // Update local state
+      setPatients(prevPatients => [newPatient, ...prevPatients]);
+      
+      // Reset form and close modal
+      setFormData({ name: '', age: '', gender: '', contact: '', email: '', medicalWard: '', password: '' });
+      setShowForm(false);
+
+    } catch (submitError) {
+      console.error('Error adding new patient:', submitError);
+      alert('Failed to add patient. Please check the data and try again.');
+    }
   };
 
-  const dischargePatient = (patientId) => {
-    setPatients(patients.map(patient => 
-      patient.id === patientId ? { ...patient, status: 'discharged' } : patient
-    ));
+  // --- API Function: PUT/PATCH Discharge Patient ---
+  const dischargePatient = async (patientId) => {
+    if (!window.confirm('Are you sure you want to discharge this patient?')) {
+      return;
+    }
+
+    try {
+      // Use Axios to send a PUT request to update the status
+      await axios.put(`${API_URL}/${patientId}`, { 
+        status: 'discharged' 
+      });
+
+      // Update local state optimistically
+      setPatients(patients.map(patient => 
+        patient._id === patientId || patient.id === patientId ? { ...patient, status: 'discharged' } : patient
+      ));
+
+    } catch (dischargeError) {
+      console.error('Error discharging patient:', dischargeError);
+      alert('Failed to discharge patient. Please try again.');
+    }
   };
 
-const { user, } = useAuth();
+  // --- Component Rendering (JSX) ---
 
   const stats = [
-    { name: 'Total Patients', value: '127', change: '+12%', changeType: 'increase' },
-    { name: 'Active Admissions', value: '24', change: '+4%', changeType: 'increase' },
+    { name: 'Total Patients', value: patients.length.toString(), change: '+12%', changeType: 'increase' },
+    { name: 'Active Admissions', value: patients.filter(p => p.status === 'admitted').length.toString(), change: '+4%', changeType: 'increase' },
     { name: 'Pending Tests', value: '8', change: '-2%', changeType: 'decrease' },
     { name: 'Today\'s Appointments', value: '15', change: '+3%', changeType: 'increase' },
   ];
 
-
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
-
-
- <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-green-900">Dashboard</h1>
-        <p className="text-green-600">Welcome back, {user?.name}</p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((item) => (
-          <div key={item.name} className="bg-transparent-500 overflow-hidden shadow rounded-lg">
-            <div className="px-4 py-5 sm:p-6">
-              <dt className="text-sm font-medium text-gray-500 truncate">{item.name}</dt>
-              <dd className="mt-1 text-3xl font-semibold text-gray-900">{item.value}</dd>
-              <div className={`text-sm font-medium ${
-                item.changeType === 'increase' ? 'text-green-600' : 'text-red-600'
-              }`}>
-                {item.change}
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-green-900">Dashboard</h1>
+          <p className="text-green-600">Welcome back, {user?.name}</p>
+        </div>
+        
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {stats.map((item) => (
+            <div key={item.name} className="bg-transparent-500 overflow-hidden shadow rounded-lg">
+              <div className="px-4 py-5 sm:p-6">
+                <dt className="text-sm font-medium text-gray-500 truncate">{item.name}</dt>
+                <dd className="mt-1 text-3xl font-semibold text-gray-900">{item.value}</dd>
+                <div className={`text-sm font-medium ${
+                  item.changeType === 'increase' ? 'text-green-600' : 'text-red-600'
+                }`}>
+                  {item.change}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="bg- shadow rounded-lg">
-        <div className="px-4 py-5 sm:px-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">Recent Activity</h3>
+          ))}
         </div>
-        <div className="border-t border-gray-200">
-          <ul className="divide-y divide-gray-200">
-            <li className="px-4 py-4 sm:px-6">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-green-600 truncate">New patient admission</p>
-                <div className="ml-2 flex-shrink-0 flex">
-                  <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                    Completed
-                  </p>
-                </div>
-              </div>
-              <div className="mt-2 sm:flex sm:justify-between">
-                <div className="sm:flex">
-                  <p className="flex items-center text-sm text-gray-500">
-                    John Doe was admitted to Ward A
-                  </p>
-                </div>
-                <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                  <p>2 hours ago</p>
-                </div>
-              </div>
-            </li>
-            <li className="px-4 py-4 sm:px-6">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-green-600 truncate">Lab test results ready</p>
-                <div className="ml-2 flex-shrink-0 flex">
-                  <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                    Completed
-                  </p>
-                </div>
-              </div>
-              <div className="mt-2 sm:flex sm:justify-between">
-                <div className="sm:flex">
-                  <p className="flex items-center text-sm text-gray-500">
-                    Blood test results for Jane Smith are available
-                  </p>
-                </div>
-                <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                  <p>4 hours ago</p>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
+        
+        {/* Recent Activity (omitted for brevity) */}
+        {/* ... */}
       </div>
-    </div>
-
-
-
 
       <div className="flex justify-between items-center mb-6 mt-6">
         <h2 className="text-xl font-semibold">Patient Management</h2>
@@ -175,6 +152,11 @@ const { user, } = useAuth();
         </button>
       </div>
 
+      {/* Loading and Error States */}
+      {loading && <p className="text-blue-500">Loading patients...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      {/* Add New Patient Form Modal (omitted for brevity) */}
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
@@ -190,6 +172,17 @@ const { user, } = useAuth();
                   className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                   required
                 />
+                
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email} 
+                  onChange={handleInputChange}
+                  placeholder="Email" 
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  required
+                />
+
                 <input
                   type="number"
                   name="age"
@@ -221,28 +214,28 @@ const { user, } = useAuth();
                   required
                 />
                 <select
-  name="medicalWard"
-  value={formData.medicalWard}
-  onChange={handleInputChange}
-  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-  required
->
-  <option value="">Select Admission Ward</option>
-  <option value="Male-Medical">Male-Medical</option>
-  <option value="Female-Medical">Female-Medical</option>
-  <option value="Pediatric Ward">Pediatric Ward</option>
-  <option value="Emergency Ward">Emergency Ward</option>
-  <option value="Surgical Ward">Surgical Ward</option>
-  <option value="Maternity Ward">Maternity Ward</option>
-  <option value="General Outpatient Department">General Outpatient Department</option>
-</select>
+                  name="medicalWard"
+                  value={formData.medicalWard}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  required
+                >
+                  <option value="">Select Admission Ward</option>
+                  <option value="Male-Medical">male ward</option>
+                  <option value="Female-Medical">female ward</option>
+                  <option value="Pediatric Ward">pediatric ward</option>
+                  <option value="Emergency Ward">emergency ward</option>
+                  <option value="Surgical Ward">surgical ward</option>
+                  <option value="Maternity Ward">maternity ward</option>
+                  <option value="General Outpatient Department">general outpatient department</option>
+                </select>
 
                 <textarea
-                  name="medicalHistory"
-                  value={formData.medicalHistory}
+                  name="password"
+                  value={formData.password}
                   onChange={handleInputChange}
-                  placeholder="Medical History"
-                  rows="3"
+                  placeholder="password"
+                  rows="1"
                   className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
@@ -266,6 +259,7 @@ const { user, } = useAuth();
         </div>
       )}
 
+      {/* Patient Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -276,19 +270,20 @@ const { user, } = useAuth();
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admission Date</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admission Ward</th>
-
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {patients.map((patient) => (
-              <tr key={patient.id}>
+              <tr key={patient._id || patient.id}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{patient.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.age}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.gender}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.contact}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.admissionDate}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {patient.admissionDate ? new Date(patient.admissionDate).toLocaleDateString() : 'N/A'}
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.medicalWard}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
@@ -301,7 +296,7 @@ const { user, } = useAuth();
                   <button className="text-green-600 hover:text-green-900">Edit</button>
                   {patient.status === 'admitted' && (
                     <button
-                      onClick={() => dischargePatient(patient.id)}
+                      onClick={() => dischargePatient(patient._id || patient.id)}
                       className="text-red-600 hover:text-red-900"
                     >
                       Discharge
