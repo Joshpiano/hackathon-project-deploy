@@ -72,7 +72,7 @@ function Login() {
           <h2 className="mt-4 text-2xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-white">
             Hospital Management System
           </h2>
-          <p className="text-sm text-center text-white">Sign in to your account</p>
+          <p className="text-sm text-center text-white text-xl">Sign in to your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
